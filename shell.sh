@@ -1,5 +1,5 @@
 # Check if the file exists
-if [ ! -e midecalRecord ]; then
+if [ ! -e midecalRecord.txt ]; then
   echo "File 'midecalRecord' does not exist."
   exit 1
 fi
@@ -28,11 +28,6 @@ month=$(echo -n "$(echo $new | cut -d':' -f2 | cut -d',' -f2 | cut -d'-' -f2)" |
 year=$(echo -n "$(echo $new | cut -d':' -f2 | cut -d',' -f2 | cut -d'-' -f1)" | wc -c)
 result=$(echo -n "$(echo $new | cut -d':' -f2 | cut -d',' -f3)" | wc -c)
 status=$(echo -n "$(echo $new | cut -d':' -f2 | cut -d',' -f5)" | wc -c)
-echo $id
-echo $name
-echo $date
-echo $result
-echo $status
 
 if [ $id -ne 7 ]
 then 
@@ -55,29 +50,88 @@ echo "$new" >> midecalRecord.txt
 fi 
 ;;
 2)
-	
-	printf "1) Retrieve all patient tests:\n"
+echo "Enter the Patient ID: "
+read idt
+idt=$( echo -n $idt | wc -c )
+if [ $idt -eq 7 ]; then
+  test="$( grep "^$idt" midecalRecord.txt | cut -d':' -f2 | cut -d',' -f1 )"
+  resultt=$( grep "^$idt" midecalRecord.txt | cut -d':' -f2 | cut -d',' -f3 )
+  Hgbt="$(grep "Hgb" medicalTest.txt | cut -d':' -f3 | cut -d';' -f1)"
+  BGTt="$(grep "BGT" medicalTest.txt | cut -d':' -f3 | cut -d';' -f1)"
+  LDLt="$(grep "LDL" medicalTest.txt | cut -d':' -f3 | cut -d';' -f1)"
+  systolet="$(grep "systole" medicalTest.txt | cut -d':' -f3 | cut -d';' -f1)"
+  diastolet="$(grep "diastole" medicalTest.txt | cut -d':' -f3 | cut -d';' -f1)"
+
+    printf "1) Retrieve all patient tests:\n"
 	printf "2) Retrieve all up normal patient tests:\n"
 	printf "3) Retrieve all patient tests in a given specific period:\n"
 	printf "4) Retrieve all patient tests based on test status:\n"
 	read u
-	case $u in
+	case $u in 
 	1)
-	echo '21'
+		#temp=$( grep "^$digits" midecalRecord.txt | cut -d':' -f2 | cut -d',' -f1 )
+		printf "the patient have this tests\n"
+		grep "^$idt" midecalRecord.txt
 	;;
 	2)
-	echo '22'
+     for tempt in $test
+	 do 
+	case $tempt in
+	    "Hgb")
+		     if [ $(( $resultt$(echo $Hgbt | cut -d',' -f1 ) &&  $resultt$(echo $Hgbt | cut -d',' -f2 ) )) == 0 ]; then
+				grep "^$idt" midecalRecord.txt | grep "$"
+				fi
+	        ;;
+		"BGT")	
+		 if [ $(( $resultt$(echo $BGTt | cut -d',' -f1 ) &&  $resultt$(echo $BGTt | cut -d',' -f2 ) )) == 0 ]; then
+				echo patient with id$idt have $test
+				fi
+	        ;;
+	    "LDL")	
+		 if [ $(( $resultt$(echo $LDLt) )) == 0 ]; then
+				echo patient with id$idt have $test 
+				fi
+	        ;;
+		"systole")	
+		 if [ $(( $resultt$(echo $systolet) )) == 0 ]; then
+				echo patient with id$idt have $test 
+				fi
+	        ;;
+		"diastole")	
+		 if [ $(( $resultt$(echo $diastolet) )) == 0 ]; then
+				echo patient with id$idt have $test 
+				fi
+	        ;;
+		*) printf "patient with id$idt have no up normal tests"				
+		
+	esac
+	done
 	;;
 	3)
-	echo '23'
+	#بفكر نعمل شرط اذا بده الفترة سنوات او سنين
+	printf "enter the year:"
+	reed y
+	printf "enter the month"
+	reed m
+	grep "^$idt.*y.*m"  midecalRecord.txt 
 	;;
 	4)
-	echo '24'
+	printf "completed"
+	grep "^1300500.*completed$" midecalRecord.txt
+	printf "***********"
+	printf "pending\n"
+	grep "^1300500.*pending$" midecalRecord.txt
 	;;
 	*)
 	echo 'please enter a valid choice'
 	;;
 	esac
+    
+	else
+	echo "Not valid. Your ID should be exactly 7 digits."
+
+fi
+	
 
 ;;
 3)
