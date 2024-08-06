@@ -1,4 +1,9 @@
 # Check if the file exists
+if [ ! -e midecalRecord ]; then
+  echo "File 'midecalRecord' does not exist."
+  exit 1
+fi
+
 
 n=1
 while [ "$n" -eq 1 ]
@@ -13,11 +18,12 @@ read y
 case $y in
 1)
 printf "Enter new medical test record\n"
+echo "you should enter it in that formula"
+echo ' "id" : "name" , "year-month" , "result" , "status" '
 read new 
 #check if valid
 id=$( echo -n "$(echo $new | cut -d':' -f1)" | wc -c )
 name=$(echo -n "$(echo $new | cut -d':' -f2 | cut -d',' -f1)" | wc -c)
-date=$(echo -n "$(echo $new | cut -d':' -f2 | cut -d',' -f2)" | wc -c)
 month=$(echo -n "$(echo $new | cut -d':' -f2 | cut -d',' -f2 | cut -d'-' -f2)" | wc -c)
 year=$(echo -n "$(echo $new | cut -d':' -f2 | cut -d',' -f2 | cut -d'-' -f1)" | wc -c)
 result=$(echo -n "$(echo $new | cut -d':' -f2 | cut -d',' -f3)" | wc -c)
@@ -78,13 +84,42 @@ fi
 printf "avg value\n"
 ;;
 4)
-	echo "enter the Patient ID: "
-	
+echo "Enter the Patient ID: "
+read ID
+
+# Count the number of digits
+digits=$(echo -n "$ID" | wc -m)
+
+if [ "$digits" -ne 7 ]; then
+    echo "Not valid. Your ID should be exactly 7 digits."
+    exit 1
+fi
+
+# Extract the old result and the full record line
+record=$(grep "$ID" midecalRecord.txt)
+old=$(echo "$record" | cut -d":" -f2 | cut -d"," -f3)
+
+if [ -z "$old" ]; then
+    echo "No record found for Patient ID: $ID"
+    exit 1
+fi
+
+echo "Enter the new result: "
+read result
+
+# Use sed to update only the result part of the line
+sed -i "/$ID/s/\($ID:[^,]*,[^,]*,\)\($old\)/\1$result/" midecalRecord.txt
+
+# Check if the sed command was successful
+if [ $? -eq 0 ]; then
+    echo "Record updated successfully."
+else
+    echo "Failed to update the record."
+fi
 ;;
 5)
 printf "loading...\n"
 printf "exiting...\n"
-exit 0
 break
 ;;
 *) printf "please enter a valid choice\n" ;;
