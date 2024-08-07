@@ -4,6 +4,8 @@ if [ ! -e midecalRecord.txt ]; then
   exit 1
 fi
 
+whle [ ];do
+	done
 
 n=1
 while [ "$n" -eq 1 ]
@@ -16,7 +18,7 @@ printf "5) Exit\n"
 printf "enter your choice: "
 read y
 case $y in
-1) 
+1)
 printf "Enter new medical test record\n"
 echo "you should enter it in that formula"
 echo ' "id" : "name" , "year-month" , "result" , "status" '
@@ -56,7 +58,7 @@ idt=$( echo -n $idt | wc -c )
 if [ $idt -eq 7 ]; then
   test="$( grep "^$idt" midecalRecord.txt | cut -d':' -f2 | cut -d',' -f1 )"
   resultt=$( grep "^$idt" midecalRecord.txt | cut -d':' -f2 | cut -d',' -f3 )
-  Hgbt="$(grep "Hgb" midicalTest.txt | cut -d':' -f3 | cut -d';' -f1)"
+  Hgbt="$(grep "Hgb" medicalTest.txt | cut -d':' -f3 | cut -d';' -f1)"
   BGTt="$(grep "BGT" medicalTest.txt | cut -d':' -f3 | cut -d';' -f1)"
   LDLt="$(grep "LDL" medicalTest.txt | cut -d':' -f3 | cut -d';' -f1)"
   systolet="$(grep "systole" medicalTest.txt | cut -d':' -f3 | cut -d';' -f1)"
@@ -110,15 +112,15 @@ if [ $idt -eq 7 ]; then
 	3)
 	#بفكر نعمل شرط اذا بده الفترة سنوات او سنين
 	printf "enter the year:"
-	read y
+	reed y
 	printf "enter the month"
-	read m
+	reed m
 	grep "^$idt.*y.*m"  midecalRecord.txt 
 	;;
 	4)
 	printf "completed"
 	grep "^1300500.*completed$" midecalRecord.txt
-	printf "***********"
+	printf "*********"
 	printf "pending\n"
 	grep "^1300500.*pending$" midecalRecord.txt
 	;;
@@ -135,7 +137,121 @@ fi
 
 ;;
 3)
-printf "avg value\n"
+# Extract the required fields
+rbcT=$(grep "[Rr][Bb][Cc]" midecalRecord.txt | cut -d":" -f2 | cut -d"," -f3)
+HgbT=$(grep "[Hh][Gg][Bb]" midecalRecord.txt | cut -d":" -f2 | cut -d"," -f3)
+BGTT=$(grep "[Bb][Gg][Tt]" midecalRecord.txt | cut -d":" -f2 | cut -d"," -f3)
+LDLT=$(grep "[Ll][Dd][Ll]" midecalRecord.txt | cut -d":" -f2 | cut -d"," -f3)
+sysT=$(grep "[Ss][Yy][Ss]" midecalRecord.txt | cut -d":" -f2 | cut -d"," -f3)
+diaT=$(grep "[Dd][Ii][Aa]" midecalRecord.txt | cut -d":" -f2 | cut -d"," -f3)
+
+# RBC Test Average Calculation
+count=$(echo "$rbcT" | wc -l)
+sum=0
+i=1
+if [ "$count" -ne 0 ]; then
+while [ "$i" -le "$count" ];do
+    value=$(echo "$rbcT" | sed -n "${i}p")
+    sum=$(echo "$sum + $value" | bc)
+    i=$((i + 1))
+done
+fi
+if [ "$count" -ne 0 ]; then
+    avg=$(echo "scale=2; $sum / $count" | bc)
+else
+    avg=0
+fi
+echo "RBC Test Average = $avg"
+
+# HGB Test Average Calculation
+count=$(echo "$HgbT" | wc -l)
+sum=0
+i=1
+if [ "$count" -ne 0 ]; then
+while [ "$i" -le "$count" ]; do
+    value=$(echo "$HgbT" | sed -n "${i}p")
+    sum=$(echo "$sum + $value" | bc)
+    i=$((i + 1))
+done
+fi
+if [ "$count" -ne 0 ]; then
+    avg=$(echo "scale=2; $sum / $count" | bc)
+else
+    avg=0
+fi
+echo "HGB Test Average = $avg"
+
+# BGT Test Average Calculation
+count=$(echo "$BGTT" | wc -l)
+sum=0
+i=1
+if [ "$count" -ne 0 ]; then
+while [ "$i" -le "$count" ]; do
+    value=$(echo "$BGTT" | sed -n "${i}p")
+    sum=$(echo "$sum + $value" | bc)
+    i=$((i + 1))
+done
+fi
+if [ "$count" -ne 0 ]; then
+    avg=$(echo "scale=2; $sum / $count" | bc)
+else
+    avg=0
+fi
+echo "BGT Test Average = $avg"
+
+# LDL Test Average Calculation
+count=$(echo "$LDLT" | wc -l)
+sum=0
+i=1
+if [ "$count" -ne 0 ]; then
+while [ "$i" -le "$count" ]; do
+    value=$(echo "$LDLT" | sed -n "${i}p")
+    sum=$(echo "$sum + $value" | bc)
+    i=$((i + 1))
+done
+fi
+if [ "$count" -ne 0 ]; then
+    avg=$(echo "scale=2; $sum / $count" | bc)
+else
+    avg=0
+fi
+echo "LDL Test Average = $avg"
+
+# SYS Test Average Calculation
+count=$(echo "$sysT" | wc -l)
+sum=0
+i=1
+if [ "$count" -ne 0 ]; then
+while [ "$i" -le "$count" ]; do
+    value=$(echo "$sysT" | sed -n "${i}p")
+    sum=$(echo "$sum + $value" | bc)
+    i=$((i + 1))
+done
+fi
+if [ "$count" -ne 0 ]; then
+    avg=$(echo "scale=2; $sum / $count" | bc)
+else
+    avg=0
+fi
+echo "SYS Test Average = $avg"
+
+# DIA Test Average Calculation
+count=$(echo "$diaT" | wc -l)
+sum=0
+i=1
+if [ "$count" -ne 0 ]; then
+while [ "$i" -le "$count" ]; do
+    value=$(echo "$diaT" | sed -n "${i}p")
+    sum=$(echo "$sum + $value" | bc)
+    i=$((i + 1))
+done
+fi
+if [ "$count" -ne 0 ]; then
+    avg=$(echo "scale=2; $sum / $count" | bc)
+else
+    avg=0
+fi
+echo "DIA Test Average = $avg"
 ;;
 4)
 echo "Enter the Patient ID: "
