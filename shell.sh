@@ -16,7 +16,7 @@ printf "5) Exit\n"
 printf "enter your choice: "
 read y
 case $y in
-1)
+1) 
 printf "Enter new medical test record\n"
 echo "you should enter it in that formula"
 echo ' "id" : "name" , "year-month" , "result" , "status" '
@@ -56,7 +56,7 @@ idt=$( echo -n $idt | wc -c )
 if [ $idt -eq 7 ]; then
   test="$( grep "^$idt" midecalRecord.txt | cut -d':' -f2 | cut -d',' -f1 )"
   resultt=$( grep "^$idt" midecalRecord.txt | cut -d':' -f2 | cut -d',' -f3 )
-  Hgbt="$(grep "Hgb" medicalTest.txt | cut -d':' -f3 | cut -d';' -f1)"
+  Hgbt="$(grep "Hgb" midicalTest.txt | cut -d':' -f3 | cut -d';' -f1)"
   BGTt="$(grep "BGT" medicalTest.txt | cut -d':' -f3 | cut -d';' -f1)"
   LDLt="$(grep "LDL" medicalTest.txt | cut -d':' -f3 | cut -d';' -f1)"
   systolet="$(grep "systole" medicalTest.txt | cut -d':' -f3 | cut -d';' -f1)"
@@ -110,9 +110,9 @@ if [ $idt -eq 7 ]; then
 	3)
 	#بفكر نعمل شرط اذا بده الفترة سنوات او سنين
 	printf "enter the year:"
-	reed y
+	read y
 	printf "enter the month"
-	reed m
+	read m
 	grep "^$idt.*y.*m"  midecalRecord.txt 
 	;;
 	4)
