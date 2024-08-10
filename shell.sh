@@ -51,7 +51,6 @@ fi
 2)
 echo "Enter the Patient ID: "
 read idt
-echo $idt
 dig=$(echo -n "$idt" | wc -c)
 #dig=${#idt}
 if [ "$dig" -ne 7 ]; then
@@ -64,7 +63,7 @@ if [ "$dig" -ne 7 ]; then
   c=1
 	while [ "$c" -ne 0 ]
 	do
-	printf "1) Retrieve all patient tests:\n"
+	printf "\n1) Retrieve all patient tests:\n"
 	printf "2) Retrieve all up normal patient tests:\n"
 	printf "3) Retrieve all patient tests in a given specific period:\n"
 	printf "4) Retrieve all patient tests based on test status:\n"
@@ -84,12 +83,12 @@ if [ "$dig" -ne 7 ]; then
 	 resultt=$( grep "$idt.*$tempt" midecalRecord.txt | cut -d':' -f2 | cut -d',' -f3  )
 	case $tempt in
 	    "Hgb")
-		     if [ $(( ${resultt} $(echo $Hgbt | cut -d',' -f1 ) &&  $resultt $(echo $Hgbt | cut -d',' -f2 ) )) == 0 ]; then
+		     if [ $(( $resultt $(echo $Hgbt | cut -d',' -f1 ) &&  $resultt $(echo $Hgbt | cut -d',' -f2 ) )) == 0 ]; then
 				echo patient with id $idt have $tempt
 				fi
 	        ;;
 		"BGT")	
-		 if [ $(( ${resultt} $(echo $BGTt | cut -d',' -f1 ) &&  $resultt $(echo $BGTt | cut -d',' -f2 ) )) == 0 ]; then
+		 if [ $(( $resultt $(echo $BGTt | cut -d',' -f1 ) &&  $resultt $(echo $BGTt | cut -d',' -f2 ) )) == 0 ]; then
 				echo patient with id $idt have $tempt
 				fi
 	        ;;
@@ -108,7 +107,7 @@ if [ "$dig" -ne 7 ]; then
 				echo patient with id $idt have $tempt
 				fi
 	        ;;
-		*) printf "patient with id $idt have no up normal tests"				
+		*) printf "patient with id $idt have no up normal tests\n"				
 		
 	esac
 	done
