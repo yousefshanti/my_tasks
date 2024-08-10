@@ -8,10 +8,10 @@ fi
 n=1
 while [ "$n" -eq 1 ]
 do 
-printf "1) Add a new medical test record:\n"
+printf "\n1) Add a new medical test record:\n"
 printf "2) Search for a test by patient ID:\n"
 printf "3) Average test value:\n"
-printf "4) Update an existing test result\n"
+printf "4) Update an existing test result:\n"
 printf "5) Exit\n"
 printf "enter your choice: "
 read y
@@ -28,7 +28,6 @@ month=$(echo -n "$(echo $new | cut -d':' -f2 | cut -d',' -f2 | cut -d'-' -f2)" |
 year=$(echo -n "$(echo $new | cut -d':' -f2 | cut -d',' -f2 | cut -d'-' -f1)" | wc -c)
 result=$(echo -n "$(echo $new | cut -d':' -f2 | cut -d',' -f3)" | wc -c)
 status=$(echo -n "$(echo $new | cut -d':' -f2 | cut -d',' -f5)" | wc -c)
-
 if [ $id -ne 7 ]
 then 
 echo " not valid your id should be = 7 integer"
@@ -52,57 +51,64 @@ fi
 2)
 echo "Enter the Patient ID: "
 read idt
-idt=$( echo -n $idt | wc -c )
-if [ $idt -eq 7 ]; then
+echo $idt
+dig=$(echo -n "$idt" | wc -c)
+#dig=${#idt}
+if [ "$dig" -ne 7 ]; then
   test="$( grep "^$idt" midecalRecord.txt | cut -d':' -f2 | cut -d',' -f1 )"
-  resultt=$( grep "^$idt" midecalRecord.txt | cut -d':' -f2 | cut -d',' -f3 )
   Hgbt="$(grep "Hgb" medicalTest.txt | cut -d':' -f3 | cut -d';' -f1)"
   BGTt="$(grep "BGT" medicalTest.txt | cut -d':' -f3 | cut -d';' -f1)"
   LDLt="$(grep "LDL" medicalTest.txt | cut -d':' -f3 | cut -d';' -f1)"
   systolet="$(grep "systole" medicalTest.txt | cut -d':' -f3 | cut -d';' -f1)"
   diastolet="$(grep "diastole" medicalTest.txt | cut -d':' -f3 | cut -d';' -f1)"
-
-    printf "1) Retrieve all patient tests:\n"
+  c=1
+	while [ "$c" -ne 0 ]
+	do
+	printf "1) Retrieve all patient tests:\n"
 	printf "2) Retrieve all up normal patient tests:\n"
 	printf "3) Retrieve all patient tests in a given specific period:\n"
 	printf "4) Retrieve all patient tests based on test status:\n"
+	printf "5) Exit the second case:\n"
+	printf "enter your choice: "
 	read u
+	
 	case $u in 
 	1)
-		#temp=$( grep "^$digits" midecalRecord.txt | cut -d':' -f2 | cut -d',' -f1 )
-		printf "the patient have this tests\n"
-		grep "$idt" midecalRecord.txt
+		
+		printf "the patient have thes tests\n"
+		grep "^$idt" midecalRecord.txt
 	;;
 	2)
      for tempt in $test
 	 do 
+	 resultt=$( grep "$idt.*$tempt" midecalRecord.txt | cut -d':' -f2 | cut -d',' -f3  )
 	case $tempt in
 	    "Hgb")
-		     if [ $(( $resultt$(echo $Hgbt | cut -d',' -f1 ) &&  $resultt$(echo $Hgbt | cut -d',' -f2 ) )) == 0 ]; then
-				grep "^$idt" midecalRecord.txt | grep "$"
+		     if [ $(( ${resultt} $(echo $Hgbt | cut -d',' -f1 ) &&  $resultt $(echo $Hgbt | cut -d',' -f2 ) )) == 0 ]; then
+				echo patient with id $idt have $tempt
 				fi
 	        ;;
 		"BGT")	
-		 if [ $(( $resultt$(echo $BGTt | cut -d',' -f1 ) &&  $resultt$(echo $BGTt | cut -d',' -f2 ) )) == 0 ]; then
-				echo patient with id$idt have $test
+		 if [ $(( ${resultt} $(echo $BGTt | cut -d',' -f1 ) &&  $resultt $(echo $BGTt | cut -d',' -f2 ) )) == 0 ]; then
+				echo patient with id $idt have $tempt
 				fi
 	        ;;
 	    "LDL")	
-		 if [ $(( $resultt$(echo $LDLt) )) == 0 ]; then
-				echo patient with id$idt have $test 
+		 if [ $(( $resultt $(echo $LDLt) )) == 0 ]; then
+				echo patient with id $idt have $tempt
 				fi
 	        ;;
 		"systole")	
-		 if [ $(( $resultt$(echo $systolet) )) == 0 ]; then
-				echo patient with id$idt have $test 
+		 if [ $(( $resultt $(echo $systolet) )) == 0 ]; then
+				echo patient with id $idt have $tempt
 				fi
 	        ;;
 		"diastole")	
-		 if [ $(( $resultt$(echo $diastolet) )) == 0 ]; then
-				echo patient with id$idt have $test 
+		 if [ $(( $resultt $(echo $diastolet) )) == 0 ]; then
+				echo patient with id $idt have $tempt
 				fi
 	        ;;
-		*) printf "patient with id$idt have no up normal tests"				
+		*) printf "patient with id $idt have no up normal tests"				
 		
 	esac
 	done
@@ -110,32 +116,41 @@ if [ $idt -eq 7 ]; then
 	3)
 	#بفكر نعمل شرط اذا بده الفترة سنوات او سنين
 	printf "enter the year:"
-	reed y
+	read y
 	printf "enter the month"
-	reed m
-	grep "^$idt.*y.*m"  midecalRecord.txt 
+	read m
+	if grep -q "$idt.*$y.*$m"  midecalRecord.txt
+	then
+	grep "$idt.*$y.*$m"  midecalRecord.txt
+    else
+	printf "There are no tests in this time period"
+	fi
+	
+	 
 	;;
 	4)
-	printf "completed"
-	grep "^1300500.*completed$" midecalRecord.txt
-	printf "*********"
-	printf "pending\n"
-	grep "^1300500.*pending$" midecalRecord.txt
+	printf "#completed : \n"
+	grep "$idt.*completed" midecalRecord.txt
+	printf "\n#pending : \n"
+	grep "$idt.*pending" midecalRecord.txt
+	;;
+	5)
+	c=0
+	printf "exiting case two...\n"
+
 	;;
 	*)
 	echo 'please enter a valid choice'
 	;;
 	esac
-    
+    done
 	else
 	echo "Not valid. Your ID should be exactly 7 digits."
-
 fi
-	
-
 ;;
+
 3)
-# Extract the required fields
+# Extract test values
 rbcT=$(grep "[Rr][Bb][Cc]" midecalRecord.txt | cut -d":" -f2 | cut -d"," -f3)
 HgbT=$(grep "[Hh][Gg][Bb]" midecalRecord.txt | cut -d":" -f2 | cut -d"," -f3)
 BGTT=$(grep "[Bb][Gg][Tt]" midecalRecord.txt | cut -d":" -f2 | cut -d"," -f3)
@@ -148,14 +163,12 @@ count=$(echo "$rbcT" | wc -l)
 sum=0
 i=1
 if [ "$count" -ne 0 ]; then
-while [ "$i" -le "$count" ];do
-    value=$(echo "$rbcT" | sed -n "${i}p")
-    sum=$(echo "$sum + $value" | bc)
-    i=$((i + 1))
-done
-fi
-if [ "$count" -ne 0 ]; then
-    avg=$(echo "scale=2; $sum / $count" | bc)
+    while [ "$i" -le "$count" ]; do
+        value=$(echo "$rbcT" | sed -n "${i}p" 2>/dev/null)
+        sum=$(echo "$sum + $value" | bc 2>/dev/null)
+        i=$((i + 1))
+    done
+    avg=$(echo "scale=2; $sum / $count" | bc 2>/dev/null)
 else
     avg=0
 fi
@@ -166,14 +179,12 @@ count=$(echo "$HgbT" | wc -l)
 sum=0
 i=1
 if [ "$count" -ne 0 ]; then
-while [ "$i" -le "$count" ]; do
-    value=$(echo "$HgbT" | sed -n "${i}p")
-    sum=$(echo "$sum + $value" | bc)
-    i=$((i + 1))
-done
-fi
-if [ "$count" -ne 0 ]; then
-    avg=$(echo "scale=2; $sum / $count" | bc)
+    while [ "$i" -le "$count" ]; do
+        value=$(echo "$HgbT" | sed -n "${i}p" 2>/dev/null)
+        sum=$(echo "$sum + $value" | bc 2>/dev/null)
+        i=$((i + 1))
+    done
+    avg=$(echo "scale=2; $sum / $count" | bc 2>/dev/null)
 else
     avg=0
 fi
@@ -184,14 +195,12 @@ count=$(echo "$BGTT" | wc -l)
 sum=0
 i=1
 if [ "$count" -ne 0 ]; then
-while [ "$i" -le "$count" ]; do
-    value=$(echo "$BGTT" | sed -n "${i}p")
-    sum=$(echo "$sum + $value" | bc)
-    i=$((i + 1))
-done
-fi
-if [ "$count" -ne 0 ]; then
-    avg=$(echo "scale=2; $sum / $count" | bc)
+    while [ "$i" -le "$count" ]; do
+        value=$(echo "$BGTT" | sed -n "${i}p" 2>/dev/null)
+        sum=$(echo "$sum + $value" | bc 2>/dev/null)
+        i=$((i + 1))
+    done
+    avg=$(echo "scale=2; $sum / $count" | bc 2>/dev/null)
 else
     avg=0
 fi
@@ -202,14 +211,12 @@ count=$(echo "$LDLT" | wc -l)
 sum=0
 i=1
 if [ "$count" -ne 0 ]; then
-while [ "$i" -le "$count" ]; do
-    value=$(echo "$LDLT" | sed -n "${i}p")
-    sum=$(echo "$sum + $value" | bc)
-    i=$((i + 1))
-done
-fi
-if [ "$count" -ne 0 ]; then
-    avg=$(echo "scale=2; $sum / $count" | bc)
+    while [ "$i" -le "$count" ]; do
+        value=$(echo "$LDLT" | sed -n "${i}p" 2>/dev/null)
+        sum=$(echo "$sum + $value" | bc 2>/dev/null)
+        i=$((i + 1))
+    done
+    avg=$(echo "scale=2; $sum / $count" | bc 2>/dev/null)
 else
     avg=0
 fi
@@ -220,14 +227,12 @@ count=$(echo "$sysT" | wc -l)
 sum=0
 i=1
 if [ "$count" -ne 0 ]; then
-while [ "$i" -le "$count" ]; do
-    value=$(echo "$sysT" | sed -n "${i}p")
-    sum=$(echo "$sum + $value" | bc)
-    i=$((i + 1))
-done
-fi
-if [ "$count" -ne 0 ]; then
-    avg=$(echo "scale=2; $sum / $count" | bc)
+    while [ "$i" -le "$count" ]; do
+        value=$(echo "$sysT" | sed -n "${i}p" 2>/dev/null)
+        sum=$(echo "$sum + $value" | bc 2>/dev/null)
+        i=$((i + 1))
+    done
+    avg=$(echo "scale=2; $sum / $count" | bc 2>/dev/null)
 else
     avg=0
 fi
@@ -238,38 +243,48 @@ count=$(echo "$diaT" | wc -l)
 sum=0
 i=1
 if [ "$count" -ne 0 ]; then
-while [ "$i" -le "$count" ]; do
-    value=$(echo "$diaT" | sed -n "${i}p")
-    sum=$(echo "$sum + $value" | bc)
-    i=$((i + 1))
-done
-fi
-if [ "$count" -ne 0 ]; then
-    avg=$(echo "scale=2; $sum / $count" | bc)
+    while [ "$i" -le "$count" ]; do
+        value=$(echo "$diaT" | sed -n "${i}p" 2>/dev/null)
+        sum=$(echo "$sum + $value" | bc 2>/dev/null)
+        i=$((i + 1))
+    done
+    avg=$(echo "scale=2; $sum / $count" | bc 2>/dev/null)
 else
     avg=0
 fi
 echo "DIA Test Average = $avg"
+
 ;;
 4)
 echo "Enter the Patient ID: "
 read ID
+
+echo "Enter the Test Type: "
+read Test
 
 # Count the number of digits
 digits=$(echo -n "$ID" | wc -m)
 
 if [ "$digits" -ne 7 ]; then
     echo "Not valid. Your ID should be exactly 7 digits."
-    exit 1
+    continue 1
+fi
+
+# Count the number of digits
+digits=$(echo -n "$Test" | wc -c)
+
+if [ "$digits" -ne 3 ]; then
+    echo "Not valid. Your Test should be exactly 3 Characters."
+    continue 1
 fi
 
 # Extract the old result and the full record line
-record=$(grep "$ID" midecalRecord.txt)
+record=$(grep "$ID" midecalRecord.txt | grep "$Test")
 old=$(echo "$record" | cut -d":" -f2 | cut -d"," -f3)
 
 if [ -z "$old" ]; then
     echo "No record found for Patient ID: $ID"
-    exit 1
+    continue 1
 fi
 
 echo "Enter the new result: "
