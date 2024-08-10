@@ -4,8 +4,6 @@ if [ ! -e midecalRecord.txt ]; then
   exit 1
 fi
 
-whle [ ];do
-	done
 
 n=1
 while [ "$n" -eq 1 ]
@@ -73,7 +71,7 @@ if [ $idt -eq 7 ]; then
 	1)
 		#temp=$( grep "^$digits" midecalRecord.txt | cut -d':' -f2 | cut -d',' -f1 )
 		printf "the patient have this tests\n"
-		grep "^$idt" midecalRecord.txt
+		grep "$idt" midecalRecord.txt
 	;;
 	2)
      for tempt in $test
